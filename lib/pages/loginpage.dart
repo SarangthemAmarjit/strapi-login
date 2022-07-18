@@ -124,6 +124,7 @@ class _FormhomeState extends State<LoginPage> {
                                             bottom: BorderSide(
                                                 color: Colors.grey))),
                                     child: TextField(
+                                      keyboardType: TextInputType.emailAddress,
                                       controller: _emaillogin,
                                       decoration: InputDecoration(
                                           hintText: "Email or Phone Number",
@@ -139,6 +140,9 @@ class _FormhomeState extends State<LoginPage> {
                                             bottom: BorderSide(
                                                 color: Colors.grey))),
                                     child: TextField(
+                                      obscureText: true,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
                                       controller: _passwordlogin,
                                       decoration: InputDecoration(
                                           hintText: "Password",
@@ -175,14 +179,14 @@ class _FormhomeState extends State<LoginPage> {
                                       String email1 = _emaillogin.text;
                                       var password1 = _passwordlogin.text;
 
-                                      ServiceApi().LoginData(email1, password1);
-                                      // if (getkey.isNotEmpty) {
-                                      //   Navigator.push(
-                                      //       context,
-                                      //       MaterialPageRoute(
-                                      //           builder: (context) =>
-                                      //               const Dashboard()));
-                                      // }
+                                      ServiceApi()
+                                          .LoginData(email1, password1)
+                                          .whenComplete(() => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Dashboard())));
+                                      Sharedpredlocalstorage().save();
                                     },
                                     child: Text(
                                       "Login",
