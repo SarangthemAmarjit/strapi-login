@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dashboard.dart';
 import 'registerpage.dart';
 
+String loginstatus = '';
 void main() {
   runApp(const MyApp());
 }
@@ -35,6 +36,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _FormhomeState extends State<LoginPage> {
+  var _formkey = GlobalKey<FormState>();
   checkkey() async {
     JwtModel finalkey;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -118,39 +120,65 @@ class _FormhomeState extends State<LoginPage> {
                                   ]),
                               child: Column(
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            bottom: BorderSide(
-                                                color: Colors.grey))),
-                                    child: TextField(
-                                      keyboardType: TextInputType.emailAddress,
-                                      controller: _emaillogin,
-                                      decoration: InputDecoration(
-                                          hintText: "Email or Phone Number",
-                                          hintStyle: TextStyle(
-                                              color: Colors.grey[400]),
-                                          border: InputBorder.none),
+                                  Form(
+                                    key: _formkey,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Colors.grey))),
+                                          child: TextFormField(
+                                            keyboardType:
+                                                TextInputType.emailAddress,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Email is required';
+                                              }
+                                              if (!RegExp(
+                                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                                  .hasMatch(value)) {
+                                                return "Please Enter a Valid Email Address";
+                                              }
+                                            },
+                                            controller: _emaillogin,
+                                            decoration: InputDecoration(
+                                                hintText:
+                                                    "Email or Phone Number",
+                                                hintStyle: TextStyle(
+                                                    color: Colors.grey[400]),
+                                                border: InputBorder.none),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Colors.grey))),
+                                          child: TextFormField(
+                                            obscureText: true,
+                                            keyboardType:
+                                                TextInputType.visiblePassword,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Password is required';
+                                              }
+                                            },
+                                            controller: _passwordlogin,
+                                            decoration: InputDecoration(
+                                                hintText: "Password",
+                                                hintStyle: TextStyle(
+                                                    color: Colors.grey[400]),
+                                                border: InputBorder.none),
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            bottom: BorderSide(
-                                                color: Colors.grey))),
-                                    child: TextField(
-                                      obscureText: true,
-                                      keyboardType:
-                                          TextInputType.visiblePassword,
-                                      controller: _passwordlogin,
-                                      decoration: InputDecoration(
-                                          hintText: "Password",
-                                          hintStyle: TextStyle(
-                                              color: Colors.grey[400]),
-                                          border: InputBorder.none),
-                                    ),
-                                  )
                                 ],
                               ),
                             ),
@@ -178,15 +206,19 @@ class _FormhomeState extends State<LoginPage> {
                                     onPressed: () {
                                       String email1 = _emaillogin.text;
                                       var password1 = _passwordlogin.text;
+                                      if (_formkey.currentState!.validate()) {
+                                        ServiceApi()
+                                            .LoginData(email1, password1)
+                                            .then((value) => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Dashboard())));
 
-                                      ServiceApi()
-                                          .LoginData(email1, password1)
-                                          .whenComplete(() => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const Dashboard())));
-                                      Sharedpredlocalstorage().save();
+                                        Sharedpredlocalstorage().save();
+                                      } else {
+                                        print('Enter a Valid Credential');
+                                      }
                                     },
                                     child: Text(
                                       "Login",
@@ -194,6 +226,14 @@ class _FormhomeState extends State<LoginPage> {
                                           fontSize: 20, color: Colors.white),
                                     ))
                               ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              loginstatus,
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.redAccent[700]),
                             ),
                             SizedBox(
                               height: 20,

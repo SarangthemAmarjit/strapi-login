@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:form1/pages/loginpage.dart';
 import 'package:http/http.dart' as http;
 import '../modals/jwt_model.dart';
 
 JwtModel? finalkey;
 JwtModel? finalkey2;
+int loginresponse = 0;
 
 class ServiceApi {
   Future<JwtModel?> submitData(
@@ -47,9 +49,9 @@ class ServiceApi {
         body: body);
     var data = jsonDecode(response.body);
     print(data);
-
-    if (response.statusCode == 200) {
-      print('Successfully Login');
+    loginresponse = response.statusCode;
+    if (loginresponse == 200) {
+      loginstatus = 'Successfully Login';
       var jwtKey2 = JwtModel.fromJson(data);
       finalkey2 = jwtKey2;
 
@@ -59,6 +61,7 @@ class ServiceApi {
       // then parse the JSON.
 
     } else {
+      loginstatus = 'Invalid Email or Password';
       // If the server did not return a 201 CREATED response,
       // then throw an exception.
       throw Exception('Failed to create ApplicationForm Form.');

@@ -23,19 +23,10 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   String getusername = '';
   String? usernamefinal;
-  // retrievefinal() async {
-  //   getusername = await Sharedpredlocalstorage().retrieve();
-  //   return getusername;
-  // }
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      usernamefinal = finalkey?.user.username;
-    });
-    //retrievefinal();
-    //
   }
 
   Widget build(BuildContext context) {
@@ -43,38 +34,16 @@ class _DashboardState extends State<Dashboard> {
       drawer: NavDrawer(),
       appBar: AppBar(
         title: Text('Dash Board'),
-        // actions: [
-        //   TextButton(
-        //       onPressed: () async {
-        //         SharedPreferences prefs = await SharedPreferences.getInstance();
-        //         if (prefs.containsKey("jwt")) {
-        //           prefs.remove("jwt");
-
-        //           Navigator.of(context).push(
-        //               MaterialPageRoute(builder: (context) => LoginPage()));
-        //         }
-        //       },
-        //       child: Text(
-        //         'Logout',
-        //         style: TextStyle(fontSize: 20, color: Colors.white),
-        //       ))
-        // ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
             child: Text(
-              'WELCOME  $usernamefinal',
+              'WELCOME',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
           ),
-          // Center(
-          //     child: ElevatedButton(
-          //         onPressed: () async {
-          //           await Sharedpredlocalstorage().checkkey();
-          //         },
-          //         child: Text('Check Key')))
         ],
       ),
     );

@@ -20,6 +20,7 @@ final _emailController = TextEditingController();
 final _passwordController = TextEditingController();
 
 class _MyWidgetState extends State<RegisterPage> {
+  GlobalKey<FormState> _formkey2 = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,41 +32,46 @@ class _MyWidgetState extends State<RegisterPage> {
         children: [
           Container(
               child: Form(
+                  key: _formkey2,
                   child: Column(
-            children: [
-              Namefield(
-                usercon: _usernameController,
-              ),
-              Emailfield(
-                emailcon: _emailController,
-              ),
-              PasswordField(
-                passcon: _passwordController,
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              ElevatedButton(
-                  onPressed: (() {
-                    String name1 = _usernameController.text;
-                    String email1 = _emailController.text;
-                    String password1 = _passwordController.text;
-                    log(name1);
-
-                    ServiceApi()
-                        .submitData(name1, email1, password1)
-                        .whenComplete(() => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Dashboard())));
-                    Sharedpredlocalstorage().save();
-                  }),
-                  child: const Text(
-                    'Submit',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ))
-            ],
-          ))),
+                    children: [
+                      Namefield(
+                        usercon: _usernameController,
+                      ),
+                      Emailfield(
+                        emailcon: _emailController,
+                      ),
+                      PasswordField(
+                        passcon: _passwordController,
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      ElevatedButton(
+                          onPressed: (() {
+                            String name1 = _usernameController.text;
+                            String email1 = _emailController.text;
+                            String password1 = _passwordController.text;
+                            log(name1);
+                            if (_formkey2.currentState!.validate()) {
+                              ServiceApi()
+                                  .submitData(name1, email1, password1)
+                                  .whenComplete(() => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Dashboard())));
+                              Sharedpredlocalstorage().save();
+                            } else {
+                              print('Form field cant be Empty');
+                            }
+                          }),
+                          child: const Text(
+                            'Submit',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ))
+                    ],
+                  ))),
         ],
       ),
     );
